@@ -1,0 +1,37 @@
+---
+
+- name: Example plays
+  hosts: all
+  tasks:
+    - name: Ensure "fav=lemonade is in section "[drinks]" in specified file
+      ini_file:
+        path: /tmp/produce.conf
+        section: drinks
+        option: fav
+        value: lemonade
+        mode: 0600
+        backup: yes
+
+    - name: Template out config file
+      template:
+        src: example.j2
+        dest: /tmp/example.conf
+
+    - name: ensure lxml is present
+      apt:
+        name: python-lxml
+        state: installed
+    - name: copy unmodified xml to /tmp
+      copy:
+        src: bar.xml
+        dest: /tmp/bar.xml
+
+    - name: Add several more beers to the beers element
+      xml:
+        path: /tmp/bar.xml
+        xpath: /business/beers
+        pretty_print: yes
+        add_children:
+        - beer: Old Rasputin
+        - beer: Old Motor Oil
+        - beer: Old Curmudgeon
